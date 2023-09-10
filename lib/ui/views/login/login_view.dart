@@ -41,6 +41,7 @@ class _LoginViewState extends State<LoginView> {
             Form(
               key: keyLoginForm,
               child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10),
                 constraints: const BoxConstraints(maxWidth: 400),
                 width: double.infinity,
                 child: Column(

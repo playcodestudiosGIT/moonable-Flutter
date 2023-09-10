@@ -15,7 +15,7 @@ class PickServices {
     );
 
     if (pickedFile == null) {
-      Provider.of<ListOrdersProvider>(context, listen: false).isLoading = false;
+      if(context.mounted) Provider.of<ListOrdersProvider>(context, listen: false).isLoading = false;
       return;
     }
 
@@ -28,7 +28,7 @@ class PickServices {
       final row = excel.tables[table]?.rows[i];
 
       if (row == null || row[0]?.value == null) {
-        print(null);
+ 
       } else {
         final order = Order(
           orderId: row[0]?.value.toString() ?? '',
@@ -72,7 +72,7 @@ class PickServices {
       final row = excel.tables[table]?.rows[i];
 
       if (row == null || row[0]?.value == null) {
-        print(null);
+
       } else {
         final order = Order(
           orderId: row[0]?.value.toString() ?? '',

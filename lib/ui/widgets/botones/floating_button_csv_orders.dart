@@ -19,6 +19,7 @@ class _FloatingButtonState extends State<FloatingButtonCsvOrders> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         FloatingActionButton(
+          mini: true,
           onPressed: () {
             PickServices.pickOrders(context);
           }, //listProvider.pickFile,
