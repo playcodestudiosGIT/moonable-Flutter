@@ -29,7 +29,7 @@ class _ClientsAdminViewState extends State<ClientsAdminView> {
         )
         .toList();
 
-    print(clientsProvider.allClientsDB);
+  
 
     return SingleChildScrollView(
       child: Column(
