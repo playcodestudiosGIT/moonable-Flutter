@@ -1,9 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:moonable/api/moonable_api.dart';
-import 'package:moonable/providers/clientes_provider.dart';
 import 'package:moonable/router/router.dart';
 import 'package:moonable/services/navigator_service.dart';
+import 'package:moonable/services/notificacion_service.dart';
 import 'package:moonable/settings/theme_data.dart';
 import 'package:moonable/ui/layouts/users_layouts.dart';
 import 'package:moonable/ui/layouts/visitors_layouts.dart';
@@ -14,6 +14,7 @@ import 'providers/conf/global_keys_provider.dart';
 import 'providers/conf/settings_provider.dart';
 import 'providers/forms/login_form_provider.dart';
 import 'providers/forms/register_form_provider.dart';
+import 'providers/list_clients_provider.dart';
 import 'providers/list_orders_provider.dart';
 import 'services/local_storage.dart';
 
@@ -32,11 +33,11 @@ class AppState extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => GlobalKeysProvider()),
-        ChangeNotifierProvider(create: (_) => ClientesProvider()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
         ChangeNotifierProvider(create: (_) => LoginFormProvider()),
         ChangeNotifierProvider(create: (_) => RegisterFormProvider()),
         ChangeNotifierProvider(create: (_) => ListOrdersProvider()),
+        ChangeNotifierProvider(create: (_) => ListClientsProvider()),
         ChangeNotifierProvider(lazy: false, create: (_) => AuthProvider()),
       ],
       child: const MyApp(),
@@ -61,6 +62,7 @@ class _MyAppState extends State<MyApp> {
       navigatorKey: NavigatorService.navigatorKey,
       theme: TemplateTheme.tema1(context),
       scrollBehavior: MyCustomScrollBehavior(),
+      scaffoldMessengerKey: NotifServ.msgKey,
       builder: ((_, child) {
         final authProvider = Provider.of<AuthProvider>(context);
         if (authProvider.authStatus == AuthStatus.checking) {

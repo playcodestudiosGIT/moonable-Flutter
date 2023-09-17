@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 
-
-
-
 class NotifServ {
   static GlobalKey<ScaffoldMessengerState> msgKey = GlobalKey<ScaffoldMessengerState>(debugLabel: 'msgKey');
 
-  static showSnackbarError( String msg, Color color) {
+  static showSnackbarError({
+    required String msg,
+    required bool ok,
+
+  }) {
     final snackBar = SnackBar(
-        backgroundColor: color,
+      elevation: 0,
+      backgroundColor: Colors.transparent,
         content: Text(
           msg,
-         
+          style: TextStyle(color: (ok) ? Colors.green : Colors.red),
         ));
 
     msgKey.currentState!.showSnackBar(snackBar);

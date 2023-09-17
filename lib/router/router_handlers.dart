@@ -61,7 +61,7 @@ class AuditorAuthHandlers {
 class AdminAuthHandlers {
   // ---
   static Handler adminClients = Handler(handlerFunc: (context, params) {
-    return const ClientesAdminView();
+    return const ClientsAdminView();
   });
   // ---
   // ---

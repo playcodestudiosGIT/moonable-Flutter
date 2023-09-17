@@ -1,13 +1,13 @@
-
-import '../../models/usuario_model.dart';
 import 'dart:convert';
 
+import 'package:moonable/models/usuario_model.dart';
+
 class AuthResponse {
-    Usuario usuario;
-    String token;
+    final Usuario user;
+    final String token;
 
     AuthResponse({
-        required this.usuario,
+        required this.user,
         required this.token,
     });
 
@@ -16,12 +16,12 @@ class AuthResponse {
     String toRawJson() => json.encode(toJson());
 
     factory AuthResponse.fromJson(Map<String, dynamic> json) => AuthResponse(
-        usuario: Usuario.fromJson(json["usuario"]),
+        user: Usuario.fromJson(json["user"]),
         token: json["token"],
     );
 
     Map<String, dynamic> toJson() => {
-        "usuario": usuario.toJson(),
+        "user": user.toJson(),
         "token": token,
     };
 }

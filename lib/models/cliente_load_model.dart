@@ -1,4 +1,6 @@
-class Cliente {
+import 'dart:convert';
+
+class ClienteLoad {
     final String clientId;
     final String businessName;
     final String firstName;
@@ -26,12 +28,8 @@ class Cliente {
     final List<String> concatenacionIban;
     final List<String> concatenacionBusinessNameIban;
     final String auxRiesgo;
-    final bool estado;
-    final DateTime createdAt;
-    final DateTime updatedAt;
-    final String uid;
 
-    Cliente({
+    ClienteLoad({
         required this.clientId,
         required this.businessName,
         required this.firstName,
@@ -59,13 +57,14 @@ class Cliente {
         required this.concatenacionIban,
         required this.concatenacionBusinessNameIban,
         required this.auxRiesgo,
-        required this.estado,
-        required this.createdAt,
-        required this.updatedAt,
-        required this.uid,
+
     });
 
-    factory Cliente.fromJson(Map<String, dynamic> json) => Cliente(
+    factory ClienteLoad.fromRawJson(String str) => ClienteLoad.fromJson(json.decode(str));
+
+    static String clientetoRawJson(cliente) => json.encode(toJson(cliente));
+
+    factory ClienteLoad.fromJson(Map<String, dynamic> json) => ClienteLoad(
         clientId: json["clientId"],
         businessName: json["businessName"],
         firstName: json["firstName"],
@@ -93,43 +92,37 @@ class Cliente {
         concatenacionIban: List<String>.from(json["concatenacionIban"].map((x) => x)),
         concatenacionBusinessNameIban: List<String>.from(json["concatenacionBusinessNameIban"].map((x) => x)),
         auxRiesgo: json["auxRiesgo"],
-        estado: json["estado"],
-        createdAt: DateTime.parse(json["createdAt"]),
-        updatedAt: DateTime.parse(json["updatedAt"]),
-        uid: json["uid"],
+
     );
 
-    Map<String, dynamic> toJson() => {
-        "clientId": clientId,
-        "businessName": businessName,
-        "firstName": firstName,
-        "lastName": lastName,
-        "ibanWallet": List<dynamic>.from(ibanWallet.map((x) => x)),
-        "tier": tier,
-        "tierStatus": tierStatus,
-        "clientType": clientType,
-        "registryDate": registryDate,
-        "countryResidency": countryResidency,
-        "nationality": nationality,
-        "birth": birth,
-        "documentNumber": documentNumber,
-        "expirationDate": expirationDate,
-        "tierRisk": tierRisk,
-        "residenceLand": residenceLand,
-        "nationalityLand": nationalityLand,
-        "ibanLand": ibanLand,
-        "residenceRisk": residenceRisk,
-        "nationalityRisk": nationalityRisk,
-        "ibanGeoRisk": ibanGeoRisk,
-        "userAge": userAge,
-        "userAgeRisk": userAgeRisk,
-        "userTypeRisk": userTypeRisk,
-        "concatenacionIban": List<dynamic>.from(concatenacionIban.map((x) => x)),
-        "concatenacionBusinessNameIban": List<dynamic>.from(concatenacionBusinessNameIban.map((x) => x)),
-        "auxRiesgo": auxRiesgo,
-        "estado": estado,
-        "createdAt": createdAt.toIso8601String(),
-        "updatedAt": updatedAt.toIso8601String(),
-        "uid": uid,
+    static Map<String, dynamic> toJson(cliente) => {
+        "clientId": cliente.clientId,
+        "businessName": cliente.businessName,
+        "firstName": cliente.firstName,
+        "lastName": cliente.lastName,
+        "ibanWallet": List<dynamic>.from(cliente.ibanWallet.map((x) => x)),
+        "tier": cliente.tier,
+        "tierStatus": cliente.tierStatus,
+        "clientType": cliente.clientType,
+        "registryDate": cliente.registryDate,
+        "countryResidency": cliente.countryResidency,
+        "nationality": cliente.nationality,
+        "birth": cliente.birth,
+        "documentNumber": cliente.documentNumber,
+        "expirationDate": cliente.expirationDate,
+        "tierRisk": cliente.tierRisk,
+        "residenceLand": cliente.residenceLand,
+        "nationalityLand": cliente.nationalityLand,
+        "ibanLand": cliente.ibanLand,
+        "residenceRisk": cliente.residenceRisk,
+        "nationalityRisk": cliente.nationalityRisk,
+        "ibanGeoRisk": cliente.ibanGeoRisk,
+        "userAge": cliente.userAge,
+        "userAgeRisk": cliente.userAgeRisk,
+        "userTypeRisk": cliente.userTypeRisk,
+        "concatenacionIban": List<dynamic>.from(cliente.concatenacionIban.map((x) => x)),
+        "concatenacionBusinessNameIban": List<dynamic>.from(cliente.concatenacionBusinessNameIban.map((x) => x)),
+        "auxRiesgo": cliente.auxRiesgo,
+
     };
 }

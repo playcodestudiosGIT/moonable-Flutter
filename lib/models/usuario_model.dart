@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 class Usuario {
+    String uid;
     String nombre;
     String apellido;
     String correo;
@@ -9,6 +10,7 @@ class Usuario {
 
 
     Usuario({
+        required this.uid,
         required this.nombre,
         required this.apellido,
         required this.correo,
@@ -26,6 +28,7 @@ class Usuario {
         correo: json["correo"],
         rol: json["rol"],
         estado: json["estado"],
+        uid: json["uid"],
 
     );
 
@@ -33,8 +36,9 @@ class Usuario {
         "nombre": nombre,
         "apellido": apellido,
         "correo": correo,
-        "rol": rol,
         "estado": estado,
+        "rol": rol,
+        "uid": uid,
         
     };
 }

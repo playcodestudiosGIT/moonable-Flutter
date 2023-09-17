@@ -14,7 +14,9 @@ TextStyle text45DisplayM(context) => Theme.of(context).textTheme.displayLarge!;
 TextStyle text32Headline(context) => Theme.of(context).textTheme.headlineLarge!;
 TextStyle text22Title(context) => Theme.of(context).textTheme.titleLarge!;
 TextStyle text14BodyM(context) => Theme.of(context).textTheme.bodyMedium!;
+TextStyle text14BodyMOp(context) => Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white.withOpacity(0.5));
 TextStyle text10mini(context) => Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 10);
+TextStyle text10miniOp(context) => Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 10, color: Colors.white.withOpacity(0.5));
 
 // Setting Variables
 

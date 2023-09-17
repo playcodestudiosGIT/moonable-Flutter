@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:moonable/settings/constants.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/order_model.dart';
+import '../../../models/order_load_model.dart';
 import '../../../providers/list_orders_provider.dart';
 import '../../widgets/botones/floating_button_csv_orders.dart';
 
@@ -20,6 +20,7 @@ class _LoadOrdersViewState extends State<LoadOrdersView> {
   Widget build(BuildContext context) {
     final orders = Provider.of<ListOrdersProvider>(context).orders;
     return Scaffold(
+      
       floatingActionButton: const FloatingButtonCsvOrders(),
       body: (orders.isEmpty)
           ? SizedBox(
@@ -50,9 +51,9 @@ class DataTableExample extends StatefulWidget {
 }
 
 class _DataTableExampleState extends State<DataTableExample> {
-  static List<Order> orders = [];
+  static List<OrderLoad> orders = [];
   List<bool> selected = [];
-  static List<Order> selectedOrders = [];
+  static List<OrderLoad> selectedOrders = [];
 
   @override
   void initState() {
@@ -63,6 +64,7 @@ class _DataTableExampleState extends State<DataTableExample> {
 
   @override
   Widget build(BuildContext context) {
+    final listOrdersProvider = Provider.of<ListOrdersProvider>(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -72,7 +74,6 @@ class _DataTableExampleState extends State<DataTableExample> {
           height: hSize(context) - 138,
           alignment: Alignment.center,
           child: ListView(
-
             children: [
               Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -83,7 +84,6 @@ class _DataTableExampleState extends State<DataTableExample> {
                     )
                   ])),
               SingleChildScrollView(
-
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
                   columns: const <DataColumn>[
@@ -268,10 +268,19 @@ class _DataTableExampleState extends State<DataTableExample> {
                 icon: Icon(Icons.clear, color: Theme.of(context).colorScheme.error),
               ),
               if (selectedOrders.isNotEmpty) ...[
-                
                 TextButton.icon(
                   label: const Text('Guardar ordenes'),
-                  onPressed: () {},
+                  onPressed: () async {
+                    await listOrdersProvider.guardarMultiplesOrdenes(orders: selectedOrders);
+            
+                    for (var order in selectedOrders) {
+                      listOrdersProvider.orders.removeWhere((orderDB) => orderDB == order);
+                    }
+                    selectedOrders = [];
+                    selected = List<bool>.generate(orders.length, (int index) => false);
+                    
+                    setState(() {});
+                  },
                   icon: const Icon(Icons.save, color: Colors.green),
                 ),
               ],

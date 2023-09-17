@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:moonable/settings/constants.dart';
 
+// ignore: must_be_immutable
 class CustomMenuItem extends StatefulWidget {
   final String text;
   final Function onPressed;

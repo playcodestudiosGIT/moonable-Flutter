@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:moonable/api/moonable_api.dart';
-import 'package:provider/provider.dart';
 
 import '../models/usuario_model.dart';
 import '../router/router.dart';
 import '../services/local_storage.dart';
 import '../services/navigator_service.dart';
 import '../services/notificacion_service.dart';
-import 'conf/global_keys_provider.dart';
 import 'http/auth_response.dart';
 
 enum AuthStatus { checking, authenticated, notAuthenticated }
@@ -40,14 +38,14 @@ class AuthProvider extends ChangeNotifier {
     try {
       final resp = await MoonableApi.httpGet('/auth');
       final authResponse = AuthResponse.fromJson(resp);
-      user = authResponse.usuario;
+      user = authResponse.user;
       _token = authResponse.token;
       authStatus = AuthStatus.authenticated;
       isLoading = false;
       notifyListeners();
       return true;
     } catch (e) {
-      NotifServ.showSnackbarError('Hubo un problema con tu autenticación', Colors.red);
+      NotifServ.showSnackbarError(msg: 'Hubo un problema con tu autenticación', ok: false);
       authStatus = AuthStatus.notAuthenticated;
       isLoading = false;
       notifyListeners();
@@ -55,20 +53,21 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  login( BuildContext context, String email, String password) async {
+  login(BuildContext context, String email, String password) async {
     isLoading = true;
     final data = {'correo': email, 'password': password};
 
     MoonableApi.post('/auth/login', data).then((json) {
+
       final authResponse = AuthResponse.fromJson(json);
-      if (!authResponse.usuario.estado) {
-        NotifServ.showSnackbarError('Un Administrador debe autorizar su registro', Colors.red);
+      if (!authResponse.user.estado) {
+        NotifServ.showSnackbarError(msg: 'Un Administrador debe autorizar su registro', ok: false);
         // NavigatorService.replaceTo(Flurorouter.login);
         isLoading = false;
         notifyListeners();
         return;
       }
-      user = authResponse.usuario;
+      user = authResponse.user;
       _token = authResponse.token;
       authStatus = AuthStatus.authenticated;
       LocalStorage.prefs.setString('token', json['token']);
@@ -79,7 +78,7 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
     }).catchError((e) {
       isLoading = false;
-      NotifServ.showSnackbarError('Credenciales Invalidas', Colors.red);
+      NotifServ.showSnackbarError(msg: 'Credenciales Invalidas', ok: false);
       notifyListeners();
     });
   }
@@ -100,12 +99,12 @@ class AuthProvider extends ChangeNotifier {
       isLoading = true;
       final authResponse = AuthResponse.fromJson(json);
 
-      Usuario user = authResponse.usuario;
+      Usuario user = authResponse.user;
       _token = authResponse.token;
-      print(user.estado);
+
 
       if (!user.estado) {
-        NotifServ.showSnackbarError('Gracias por registrarte, un administrador debe aprobar tu registro', Colors.green);
+        NotifServ.showSnackbarError(msg: 'Gracias por registrarte, un administrador debe aprobar tu registro', ok: true );
         NavigatorService.navigateTo(Flurorouter.rootRoute);
         isLoading = false;
         notifyListeners();
@@ -120,7 +119,7 @@ class AuthProvider extends ChangeNotifier {
     }).catchError((e) {
       isLoading = false;
       notifyListeners();
-      NotifServ.showSnackbarError('Correo ya existe. ir al Log in', Colors.red);
+      NotifServ.showSnackbarError( msg: 'Correo ya existe. ir al Log in', ok: false);
     });
   }
 
@@ -143,10 +142,10 @@ class AuthProvider extends ChangeNotifier {
     final data = {"nombre": nombre, "apellido": apellido, "correo": correo, "mensaje": mensaje};
     try {
       await MoonableApi.post('/usuarios/support', data);
-      NotifServ.showSnackbarError('Correo enviado a soporte', Colors.green);
+      NotifServ.showSnackbarError(msg: 'Correo enviado a soporte', ok: true);
       return true;
     } catch (e) {
-      print(e);
+    
       return false;
     }
   }
@@ -160,10 +159,10 @@ class AuthProvider extends ChangeNotifier {
     final data = {"nombre": nombre, "apellido": apellido, "correo": correo, "mensaje": mensaje};
     try {
       await MoonableApi.post('/usuarios/contact-email', data);
-      NotifServ.showSnackbarError('Correo enviado a usuario', Colors.green);
+      NotifServ.showSnackbarError(msg: 'Correo enviado a usuario',ok: true);
       return true;
     } catch (e) {
-      print(e);
+   
       return false;
     }
   }

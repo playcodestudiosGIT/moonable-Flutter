@@ -42,23 +42,23 @@ class CustomDrawer extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 48),
-          const Column(
+          Column(
             children: [
-              CircleAvatar(radius: 30),
+              const CircleAvatar(radius: 30),
+              const SizedBox(height: 10),
+              Text('${authProvider.user!.nombre} ${authProvider.user!.apellido}'),
+              const SizedBox(height: 30),
+              TextButton.icon(
+                  onPressed: () {
+                    NavigatorService.navigateTo(Flurorouter.auditorPerfil);
+                    closeDrawer();
+                  },
+                  icon: const Icon(Icons.edit),
+                  label: const Text('Editar'))
             ],
           ),
           const SizedBox(height: 48),
-          const SeparadorMenuTexto(text: 'Mi Cuenta'),
-          CustomMenuItem(
-            text: 'Perfil',
-            onPressed: () {
-              closeDrawer();
-              NavigatorService.navigateTo(Flurorouter.auditorPerfil);
-            },
-            width: 100,
-            padding: 10,
-            icon: Icons.person,
-          ),
+          const SeparadorMenuTexto(text: 'Inicio'),
           CustomMenuItem(
             text: 'Monitor',
             onPressed: () {
@@ -126,7 +126,9 @@ class CustomDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 100,)
+            const SizedBox(
+              height: 100,
+            )
           ]
         ],
       ),
