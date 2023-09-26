@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:moonable/models/cliente_load_model.dart';
+import 'package:moonable/models/cliente_model.dart';
 import 'package:moonable/settings/constants.dart';
 import 'package:moonable/ui/widgets/botones/floating_button_csv_clients.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +30,10 @@ class _LoadClientsViewState extends State<LoadClientsView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(width: 25, height: 25, child: CircularProgressIndicator()),
+                  SizedBox(
+                      width: 25,
+                      height: 25,
+                      child: CircularProgressIndicator()),
                   Text('Esperando Archivo'),
                 ],
               )))
@@ -50,13 +53,18 @@ class DataTableExample extends StatefulWidget {
 }
 
 class _DataTableExampleState extends State<DataTableExample> {
-  static List<ClienteLoad> clients = [];
+  static List<Cliente> clients = [];
   List<bool> selected = [];
-  static List<ClienteLoad> selectedClients = [];
+  static List<Cliente> selectedClients = [];
 
   @override
   void initState() {
-    clients = Provider.of<ListClientsProvider>(context, listen: false).clientsLoad;
+    final clientsProvider =
+        Provider.of<ListClientsProvider>(context, listen: false);
+    clients = clientsProvider.clientsLoad
+        .where((element) =>
+            element.firstName != "N/A" && !element.ibanWallet.contains(""))
+        .toList();
     selected = List<bool>.generate(clients.length, (int index) => false);
     super.initState();
   }
@@ -64,6 +72,7 @@ class _DataTableExampleState extends State<DataTableExample> {
   @override
   Widget build(BuildContext context) {
     final listClientsProvider = Provider.of<ListClientsProvider>(context);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -75,7 +84,8 @@ class _DataTableExampleState extends State<DataTableExample> {
           child: ListView(
             children: [
               Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                   child: Row(children: [
                     Text(
                       'Lista de Clientes',
@@ -87,7 +97,6 @@ class _DataTableExampleState extends State<DataTableExample> {
                 child: DataTable(
                   dataRowMinHeight: 48,
                   columns: const <DataColumn>[
-                    DataColumn(label: Text('Client ID')),
                     DataColumn(label: Text('Business Name')),
                     DataColumn(label: Text('First Name')),
                     DataColumn(label: Text('Last Name')),
@@ -101,28 +110,22 @@ class _DataTableExampleState extends State<DataTableExample> {
                     DataColumn(label: Text('Date of birth')),
                     DataColumn(label: Text('Document number')),
                     DataColumn(label: Text('Expiration Date')),
-                    DataColumn(label: Text('Tier risk')),
                     DataColumn(label: Text('Residence land')),
                     DataColumn(label: Text('Nationality land')),
-                    DataColumn(label: Text('Iban land')),
-                    DataColumn(label: Text('Residence risk')),
-                    DataColumn(label: Text('Nationality risk')),
-                    DataColumn(label: Text('Iban geo risk')),
                     DataColumn(label: Text('User age')),
-                    DataColumn(label: Text('User age risk')),
-                    DataColumn(label: Text('User type risk')),
-                    DataColumn(label: Text('Concatenation IBAN')),
-                    DataColumn(label: Text('Concatenation Business Name')),
                     DataColumn(label: Text('Aux Riesgo')),
                   ],
                   rows: List<DataRow>.generate(
                     clients.length,
                     (int index) => DataRow(
-
-                      color: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+                      color: MaterialStateProperty.resolveWith<Color?>(
+                          (Set<MaterialState> states) {
                         // All rows will have the same selected color.
                         if (states.contains(MaterialState.selected)) {
-                          return Theme.of(context).colorScheme.primary.withOpacity(0.08);
+                          return Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(0.08);
                         }
                         // Even rows will have a grey color.
                         if (index.isEven) {
@@ -133,159 +136,117 @@ class _DataTableExampleState extends State<DataTableExample> {
                       cells: <DataCell>[
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
-                          width: 50,
-                          child: Text(clients[index].clientId, style: Theme.of(context).textTheme.bodySmall),
-                        )),
-                        DataCell(Container(
-                          alignment: Alignment.centerLeft,
                           width: 100,
-                          child: Text(clients[index].businessName, style: Theme.of(context).textTheme.bodySmall),
+                          child: Text(clients[index].businessName ?? 'N/A',
+                              style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 80,
-                          child: Text(clients[index].firstName, style: Theme.of(context).textTheme.bodySmall),
+                          child: Text(clients[index].firstName ?? 'N/A',
+                              style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 80,
-                          child: Text(clients[index].lastName, style: Theme.of(context).textTheme.bodySmall),
+                          child: Text(clients[index].lastName ?? 'N/A',
+                              style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 200,
-                   
-                          child: ListView(
-                           
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              ...clients[index].ibanWallet.map((e) => Text(e, overflow: TextOverflow.fade, style: Theme.of(context).textTheme.bodySmall))
+                              ...clients[index].ibanWallet.map((e) {
+                                if (e == "") {
+                                  // print(true);
+                                }
+                                return Text(e,
+                                    overflow: TextOverflow.fade,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall);
+                              })
                             ],
                           ),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 50,
-                          child: Text(clients[index].tier, style: Theme.of(context).textTheme.bodySmall),
+                          child: Text(clients[index].tier ?? 'N/A',
+                              style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 80,
-                          child: Text(clients[index].tierStatus, style: Theme.of(context).textTheme.bodySmall),
+                          child: Text(clients[index].tierStatus ?? 'N/A',
+                              style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 80,
-                          child: Text(clients[index].clientType, style: Theme.of(context).textTheme.bodySmall),
+                          child: Text(clients[index].clientType ?? 'N/A',
+                              style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 80,
-                          child: Text(clients[index].registryDate, style: Theme.of(context).textTheme.bodySmall),
+                          child: Text(clients[index].registryDate ?? 'N/A',
+                              style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 100,
-                          child: Text(clients[index].countryResidency, style: Theme.of(context).textTheme.bodySmall),
+                          child: Text(clients[index].countryResidency ?? 'N/A',
+                              style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 100,
-                          child: Text(clients[index].nationality, style: Theme.of(context).textTheme.bodySmall),
+                          child: Text(clients[index].nationality ?? 'N/A',
+                              style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 80,
-                          child: Text(clients[index].birth, style: Theme.of(context).textTheme.bodySmall),
+                          child: Text(clients[index].birth ?? 'N/A',
+                              style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 100,
-                          child: Text(clients[index].documentNumber, style: Theme.of(context).textTheme.bodySmall),
+                          child: Text(clients[index].documentNumber ?? 'N/A',
+                              style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 80,
-                          child: Text(clients[index].expirationDate, style: Theme.of(context).textTheme.bodySmall),
-                        )),
-                        DataCell(Container(
-                          alignment: Alignment.centerLeft,
-                          width: 50,
-                          child: Text(clients[index].tierRisk, style: Theme.of(context).textTheme.bodySmall),
+                          child: Text(clients[index].expirationDate ?? 'N/A',
+                              style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 100,
-                          child: Text(clients[index].residenceLand, style: Theme.of(context).textTheme.bodySmall),
+                          child: Text(clients[index].residenceLand ?? 'N/A',
+                              style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 50,
-                          child: Text(clients[index].nationalityLand, style: Theme.of(context).textTheme.bodySmall),
+                          child: Text(clients[index].nationalityLand ?? 'N/A',
+                              style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 50,
-                          child: Text(clients[index].ibanLand, style: Theme.of(context).textTheme.bodySmall),
-                        )),
-                        DataCell(Container(
-                          alignment: Alignment.centerLeft,
-                          width: 50,
-                          child: Text(clients[index].residenceRisk, style: Theme.of(context).textTheme.bodySmall),
-                        )),
-                        DataCell(Container(
-                          alignment: Alignment.centerLeft,
-                          width: 50,
-                          child: Text(clients[index].nationalityRisk, style: Theme.of(context).textTheme.bodySmall),
-                        )),
-                        DataCell(Container(
-                          alignment: Alignment.centerLeft,
-                          width: 50,
-                          child: Text(clients[index].ibanGeoRisk, style: Theme.of(context).textTheme.bodySmall),
-                        )),
-                        DataCell(Container(
-                          alignment: Alignment.centerLeft,
-                          width: 50,
-                          child: Text(clients[index].userAge, style: Theme.of(context).textTheme.bodySmall),
+                          child: Text(clients[index].userAge ?? 'N/A',
+                              style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 80,
-                          child: Text(clients[index].userAgeRisk, style: Theme.of(context).textTheme.bodySmall),
-                        )),
-                        DataCell(Container(
-                          alignment: Alignment.centerLeft,
-                          width: 80,
-                          child: Text(clients[index].userTypeRisk, style: Theme.of(context).textTheme.bodySmall),
-                        )),
-                        DataCell(Container(
-                            alignment: Alignment.centerLeft,
-                            width: 350,
-                 
-                  
-                            child: Column(
-                        
-                              children: [
-                                ...clients[index]
-                                    .concatenacionIban
-                                    .map((e) => Text(e, maxLines: 1, overflow: TextOverflow.fade, style: text10mini(context)))
-                              ],
-                            ))),
-                        DataCell(Container(
-                            alignment: Alignment.centerLeft,
-                            width: 350,
-                 
-                            child: Column(
-                
-                              children: [
-                                ...clients[index]
-                                    .concatenacionBusinessNameIban
-                                    .map((e) => Text(e, maxLines: 1, overflow: TextOverflow.fade, style: Theme.of(context).textTheme.bodySmall))
-                              ],
-                            ))),
-                        DataCell(Container(
-                          alignment: Alignment.centerLeft,
-                          width: 80,
-                          child: FittedBox(child: Text(clients[index].auxRiesgo, style: Theme.of(context).textTheme.bodySmall)),
+                          child: Text(clients[index].auxRiesgo ?? 'N/A',
+                              style: Theme.of(context).textTheme.bodySmall),
                         )),
                       ],
                       selected: selected[index],
@@ -318,22 +279,29 @@ class _DataTableExampleState extends State<DataTableExample> {
                 label: const Text('Limpiar lista'),
                 onPressed: () {
                   setState(() {
+                    listClientsProvider.clientsLoad = [];
                     clients = [];
+                    selected = [];
+                    selectedClients = [];
                   });
                 },
-                icon: Icon(Icons.clear, color: Theme.of(context).colorScheme.error),
+                icon: Icon(Icons.clear,
+                    color: Theme.of(context).colorScheme.error),
               ),
               if (selectedClients.isNotEmpty) ...[
                 TextButton.icon(
                   label: const Text('Guardar Clientes'),
                   onPressed: () async {
-                    await listClientsProvider.guardarMultiplesClientes(clients: selectedClients);
+                    await listClientsProvider.guardarMultiplesClientes(
+                        clients: selectedClients);
 
                     for (var order in selectedClients) {
-                      listClientsProvider.clientsLoad.removeWhere((orderDB) => orderDB == order);
+                      listClientsProvider.clientsLoad
+                          .removeWhere((orderDB) => orderDB == order);
                     }
                     selectedClients = [];
-                    selected = List<bool>.generate(clients.length, (int index) => false);
+                    selected = List<bool>.generate(
+                        clients.length, (int index) => false);
 
                     setState(() {});
                   },

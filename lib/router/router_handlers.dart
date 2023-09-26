@@ -1,14 +1,14 @@
 import 'package:fluro/fluro.dart';
 import 'package:moonable/ui/views/admin/clientes_admin_view.dart';
-import 'package:moonable/ui/views/admin/orders_admin_view.dart';
+import 'package:moonable/ui/views/admin/operations_admin_view.dart';
 import 'package:moonable/ui/views/auditor/monitor_view.dart';
 import 'package:moonable/ui/views/auditor/perfil_auditor_view.dart';
 import 'package:moonable/ui/views/login/login_view.dart';
 import 'package:moonable/ui/views/login/register_view.dart';
 import 'package:moonable/ui/views/system/home_view.dart';
-import 'package:moonable/ui/views/admin/load_orders_view.dart';
 
 import '../ui/views/admin/load_clients_view.dart';
+import '../ui/views/admin/load_operations_view.dart';
 
 class VisitorHandlers {
   // ---
@@ -65,14 +65,14 @@ class AdminAuthHandlers {
   });
   // ---
   // ---
-  static Handler adminOrders = Handler(handlerFunc: (context, params) {
-    return const OrdersAdminView();
+  static Handler adminOperations = Handler(handlerFunc: (context, params) {
+    return const OperationsAdminView();
   });
   static Handler uploadClients = Handler(handlerFunc: (context, params) {
     return const LoadClientsView();
   });
-  static Handler uploadOrders = Handler(handlerFunc: (context, params) {
-    return const LoadOrdersView();
+  static Handler uploadOp = Handler(handlerFunc: (context, params) {
+    return const LoadOperationsView();
   });
   // ---
 }

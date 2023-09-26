@@ -83,10 +83,10 @@ class CustomDrawer extends StatelessWidget {
               icon: Icons.business_center,
             ),
             CustomMenuItem(
-              text: 'Ordenes',
+              text: 'Operaciones',
               onPressed: () {
                 closeDrawer();
-                NavigatorService.navigateTo(Flurorouter.adminOrders);
+                NavigatorService.navigateTo(Flurorouter.adminOperations);
               },
               width: 100,
               padding: 10,
@@ -104,10 +104,10 @@ class CustomDrawer extends StatelessWidget {
               icon: Icons.group_add_rounded,
             ),
             CustomMenuItem(
-              text: 'Cargar Ordenes',
+              text: 'Cargar Operaciones',
               onPressed: () {
                 closeDrawer();
-                NavigatorService.navigateTo(Flurorouter.uploadOrders);
+                NavigatorService.navigateTo(Flurorouter.uploadOp);
               },
               width: 100,
               padding: 10,

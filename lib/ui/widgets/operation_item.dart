@@ -1,61 +1,66 @@
-import 'package:country_flags/country_flags.dart';
-import 'package:flutter/material.dart';
 
-import '../../models/order_model.dart';
+import 'package:flutter/material.dart';
+import 'package:moonable/models/cliente_model.dart';
+import 'package:moonable/providers/list_clients_provider.dart';
+import 'package:moonable/ui/widgets/flag_country_widget.dart';
+import 'package:provider/provider.dart';
+
+import '../../models/operation_model.dart';
 import '../../settings/constants.dart';
 
-class OrderItem extends StatelessWidget {
-  final Order order;
-  const OrderItem({super.key, required this.order});
+class OperationItem extends StatefulWidget {
+  final Operation operation;
+  const OperationItem({super.key, required this.operation});
+
+  @override
+  State<OperationItem> createState() => _OperationItemState();
+}
+
+class _OperationItemState extends State<OperationItem> {
+  late final Cliente? client;
+
+  @override
+  void initState() {
+    client = Provider.of<ListClientsProvider>(context, listen: false)
+        .getClientById(id: widget.operation.client!);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
+        constraints: const BoxConstraints(maxWidth: 500, minWidth: 300),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         margin: const EdgeInsets.all(5),
-        width: 450,
-        height: 80,
-        decoration: BoxDecoration(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(16)),
+        width: 500,
+        height: 120,
+        decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(16)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(
-              width: 30,
-              height: 30,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: CountryFlag.fromCountryCode(
-                  order.ibanWallet[0].substring(0, 2),
-                  height: 80,
-                  width: 80,
-                  borderRadius: 0,
-                ),
-              ),
-            ),
+            FlagWCountryWidget(
+                country: widget.operation.ibanWallet.substring(0, 2)),
             const SizedBox(width: 15),
             SizedBox(
-              width: 200,
+              width: 170,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '${order.firstName} ${order.lastName}',
+                    '${client?.firstName ?? 'N/A'} ${client?.lastName ?? 'N/A'}',
                     style: text14BodyM(context),
                   ),
                   Text(
                     'Iban Wallet',
                     style: text10miniOp(context),
                   ),
-                  Column(
-                    children: [
-                      ...order.ibanWallet.map((e) => Text(
-                            e,
-                            style: text10mini(context),
-                          )),
-                    ],
+                  Text(
+                    widget.operation.ibanWallet,
+                    style: text10mini(context),
                   ),
                   Row(
                     children: [
@@ -64,7 +69,7 @@ class OrderItem extends StatelessWidget {
                         style: text10miniOp(context),
                       ),
                       Text(
-                        order.platform,
+                        widget.operation.platform ?? '-',
                         style: text10mini(context),
                       ),
                     ],
@@ -82,15 +87,7 @@ class OrderItem extends StatelessWidget {
                   style: text10miniOp(context),
                 ),
                 Text(
-                  '${order.fiatAmount} ${order.fiatType}',
-                  style: text14BodyM(context),
-                ),
-                Text(
-                  'Total purchase:',
-                  style: text10miniOp(context),
-                ),
-                Text(
-                  '${order.totalAssetPurchase} ${order.assetType}',
+                  '${widget.operation.fiatAmount} ${widget.operation.fiatType}',
                   style: text14BodyM(context),
                 ),
               ],
@@ -105,7 +102,7 @@ class OrderItem extends StatelessWidget {
                   style: text10miniOp(context),
                 ),
                 Text(
-                  '${order.percent} %',
+                  '${widget.operation.percent} %',
                   style: text14BodyM(context),
                 ),
                 Text(
@@ -113,7 +110,11 @@ class OrderItem extends StatelessWidget {
                   style: text10miniOp(context),
                 ),
                 Text(
-                  order.dueDate,
+                  '${widget.operation.dueDate.day}/${widget.operation.dueDate.month}/${widget.operation.dueDate.year} - ${widget.operation.dueDate.hour}:${widget.operation.dueDate.minute}',
+                  style: text10mini(context),
+                ),
+                Text(
+                  '${DateTime.now().difference(widget.operation.dueDate).inHours}',
                   style: text14BodyM(context),
                 ),
               ],

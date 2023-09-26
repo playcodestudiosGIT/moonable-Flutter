@@ -16,9 +16,9 @@ class Flurorouter {
   static String auditorMonitor = '/auditor/monitor';
 
   static String adminClients = '/admin/clients';
-  static String adminOrders = '/admin/orders';
+  static String adminOperations = '/admin/operations';
   static String uploadClients = '/admin/uploadClients';
-  static String uploadOrders = '/admin/uploadOrders';
+  static String uploadOp = '/admin/uploadOp';
   static String login = '/auth/login';
   static String register = '/auth/register';
 
@@ -64,8 +64,8 @@ class Flurorouter {
       transitionDuration: const Duration(milliseconds: 100),
     );
     router.define(
-      adminOrders,
-      handler: AdminAuthHandlers.adminOrders,
+      adminOperations,
+      handler: AdminAuthHandlers.adminOperations,
       transitionType: TransitionType.none,
       transitionDuration: const Duration(milliseconds: 100),
     );
@@ -76,8 +76,8 @@ class Flurorouter {
       transitionDuration: const Duration(milliseconds: 100),
     );
     router.define(
-      uploadOrders,
-      handler: AdminAuthHandlers.uploadOrders,
+      uploadOp,
+      handler: AdminAuthHandlers.uploadOp,
       transitionType: TransitionType.none,
       transitionDuration: const Duration(milliseconds: 100),
     );

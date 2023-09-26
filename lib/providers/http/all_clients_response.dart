@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:moonable/models/cliente_model.dart';
+import '../../models/cliente_model.dart';
 
 class AllClientsResponse {
     final int total;
-    final List<dynamic> clients;
+    final List<Cliente> clients;
 
     AllClientsResponse({
         required this.total,

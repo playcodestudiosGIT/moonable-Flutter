@@ -15,7 +15,7 @@ import 'providers/conf/settings_provider.dart';
 import 'providers/forms/login_form_provider.dart';
 import 'providers/forms/register_form_provider.dart';
 import 'providers/list_clients_provider.dart';
-import 'providers/list_orders_provider.dart';
+import 'providers/list_operations_provider.dart';
 import 'services/local_storage.dart';
 
 void main() async {
@@ -36,7 +36,7 @@ class AppState extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
         ChangeNotifierProvider(create: (_) => LoginFormProvider()),
         ChangeNotifierProvider(create: (_) => RegisterFormProvider()),
-        ChangeNotifierProvider(create: (_) => ListOrdersProvider()),
+        ChangeNotifierProvider(create: (_) => ListOperationsProvider()),
         ChangeNotifierProvider(create: (_) => ListClientsProvider()),
         ChangeNotifierProvider(lazy: false, create: (_) => AuthProvider()),
       ],

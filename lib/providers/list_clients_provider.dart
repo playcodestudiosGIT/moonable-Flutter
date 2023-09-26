@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:moonable/models/cliente_load_model.dart';
 
 import '../api/moonable_api.dart';
 import '../models/cliente_model.dart';
@@ -9,8 +8,8 @@ import 'http/all_clients_response.dart';
 class ListClientsProvider extends ChangeNotifier {
   List<Cliente> _allClientsDB = [];
   int _totalAllClientsDB = 0;
-  List<ClienteLoad> _clientsLoad = [];
-  List<ClienteLoad> selectedClients = [];
+  List<Cliente> _clientsLoad = [];
+  List<Cliente> selectedClients = [];
   bool _isLoading = false;
 
   int get totalAllOrdersDB => _totalAllClientsDB;
@@ -27,9 +26,9 @@ class ListClientsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<ClienteLoad> get clientsLoad => _clientsLoad;
+  List<Cliente> get clientsLoad => _clientsLoad;
 
-  set clientsLoad(List<ClienteLoad> value) {
+  set clientsLoad(List<Cliente> value) {
     _clientsLoad = value;
     notifyListeners();
   }
@@ -41,17 +40,20 @@ class ListClientsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> guardarMultiplesClientes({required List<ClienteLoad> clients}) async {
+  Future<void> guardarMultiplesClientes(
+      {required List<Cliente> clients}) async {
     List data = [];
 
-    for (ClienteLoad client in clients) {
-      final decodeClient = ClienteLoad.clientetoRawJson(client);
+    for (Cliente client in clients) {
+      final decodeClient = client.toRawJson();
       data.add(decodeClient);
     }
 
     try {
-      final resp = await MoonableApi.post('/clientes/bulk', {"clientes": "$data"});
-      NotifServ.showSnackbarError(msg: resp["msg"], ok: true);
+      final resp =
+          await MoonableApi.post('/clientes/bulk', {"clientes": "$data"});
+      NotifServ.showSnackbarError(
+          msg: "${resp["msg"]} \n ${resp["duplicados"]}", ok: true);
     } catch (e) {
       // print(e);
     }
@@ -60,46 +62,26 @@ class ListClientsProvider extends ChangeNotifier {
   Future<void> getAllClientsDB() async {
     try {
       final resp = await MoonableApi.httpGet('/clientes');
+      final allClientsResponse = AllClientsResponse.fromJson(resp);
 
-      final clientesResponse = AllClientsResponse.fromJson(resp);
-
-      for (var client in clientesResponse.clients) {
-        _allClientsDB.add(Cliente(
-            clientId: client.clientId,
-            businessName: client.businessName,
-            firstName: client.firstName,
-            lastName: client.lastName,
-            ibanWallet: client.ibanWallet,
-            tier: client.tier,
-            tierStatus: client.tierStatus,
-            clientType: client.clientType,
-            registryDate: client.registryDate,
-            countryResidency: client.countryResidency,
-            nationality: client.nationality,
-            birth: client.birth,
-            documentNumber: client.documentNumber,
-            expirationDate: client.expirationDate,
-            tierRisk: client.tierRisk,
-            residenceLand: client.residenceLand,
-            nationalityLand: client.nationalityLand,
-            ibanLand: client.ibanLand,
-            residenceRisk: client.residenceRisk,
-            nationalityRisk: client.nationalityRisk,
-            ibanGeoRisk: client.ibanGeoRisk,
-            userAge: client.userAge,
-            userAgeRisk: client.userAgeRisk,
-            userTypeRisk: client.userTypeRisk,
-            concatenacionIban: client.concatenacionIban,
-            concatenacionBusinessNameIban: client.concatenacionBusinessNameIban,
-            auxRiesgo: client.auxRiesgo,
-            estado: client.estado,
-            createdAt: client.createdAt,
-            updatedAt: client.updatedAt,
-            uid: client.uid));
-      }
-      notifyListeners();
+      allClientsDB = allClientsResponse.clients;
+      totalAllClientsDB = allClientsResponse.total;
     } catch (e) {
-      // print(e)
+      // print(e);
     }
+  }
+
+  Cliente? getClientByIban({required String iban}) {
+    final client = allClientsDB
+        .where((element) => element.ibanWallet.contains(iban))
+        .firstOrNull;
+
+    return client;
+  }
+
+  Cliente? getClientById({required String id}) {
+    final client =
+        allClientsDB.where((element) => element.uid == id).firstOrNull;
+    return client;
   }
 }

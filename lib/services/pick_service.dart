@@ -1,17 +1,18 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
-import 'package:moonable/models/cliente_load_model.dart';
+import 'package:moonable/models/cliente_model.dart';
 
-import 'package:moonable/models/order_load_model.dart';
-import 'package:moonable/providers/list_orders_provider.dart';
+import 'package:moonable/providers/list_operations_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../models/operation_model.dart';
 import '../providers/list_clients_provider.dart';
 
 class PickServices {
-  static pickOrders(BuildContext context) async {
-    Provider.of<ListOrdersProvider>(context, listen: false).isLoading = true;
+  static pickOp(BuildContext context) async {
+    Provider.of<ListOperationsProvider>(context, listen: false).isLoading =
+        true;
     FilePickerResult? pickedFile = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['xlsx'],
@@ -19,42 +20,47 @@ class PickServices {
     );
 
     if (pickedFile == null) {
-      if (context.mounted) Provider.of<ListOrdersProvider>(context, listen: false).isLoading = false;
+      if (context.mounted) {
+        Provider.of<ListOperationsProvider>(context, listen: false).isLoading =
+            false;
+      }
       return;
     }
 
     /// file might be picked
-    List<OrderLoad> orders = [];
+    List<Operation> operations = [];
     var bytes = pickedFile.files.single.bytes;
     var excel = Excel.decodeBytes(bytes!);
     var table = excel.tables.keys.first;
+    
     for (var i = 4; i <= 100; i++) {
       final row = excel.tables[table]?.rows[i];
 
       if (row == null || row[0]?.value == null) {
-      } else {
-        final order = OrderLoad(
-          orderId: row[0]?.value.toString() ?? 'N/A',
-          platform: row[1]?.value.toString() ?? 'N/A',
-          businessName: row[2]?.value.toString() ?? 'N/A',
-          firstName: row[3]?.value.toString() ?? 'N/A',
-          lastName: row[4]?.value.toString() ?? 'N/A',
-          ibanWallet: row[5]?.value.toString() ?? 'N/A',
-          fiatAmount: row[6]?.value.toString() ?? 'N/A',
-          fiatType: row[7]?.value.toString() ?? 'N/A',
-          exchangeRate: row[8]?.value.toString() ?? 'N/A',
-          totalAssetPurchase: row[9]?.value.toString() ?? 'N/A',
-          assetType: row[10]?.value.toString() ?? 'N/A',
-          percent: row[11]?.value.toString() ?? 'N/A',
-          dueDate: row[12]?.value.toString() ?? 'N/A',
-        );
 
-        orders.add(order);
+      } else {
+        const gsDateBase = 2209161600 / 86400;
+        const gsDateFactor = 86400000;
+        final millis = (double.tryParse(row[12]?.value.toString() ?? "00000")! - gsDateBase) * gsDateFactor;
+        final operation = Operation(
+            platform: row[1]?.value.toString() ?? 'N/A',
+            ibanWallet: row[5]?.value.toString() ?? '000000',
+            fiatAmount: row[6]?.value ?? 0.0,
+            fiatType: row[7]?.value.toString() ?? 'N/A',
+            exchangeRate: row[8]?.value ?? 0.0,
+            assetType: row[10]?.value.toString() ?? 'N/A',
+            percent: row[11]?.value ?? 0.0,
+            dueDate: DateTime.fromMillisecondsSinceEpoch(millis.toInt(), isUtc: true)
+            );
+
+        operations.add(operation);
       }
     }
     if (context.mounted) {
-      Provider.of<ListOrdersProvider>(context, listen: false).orders = orders;
-      Provider.of<ListOrdersProvider>(context, listen: false).isLoading = false;
+      Provider.of<ListOperationsProvider>(context, listen: false)
+          .operationsLoad = operations;
+      Provider.of<ListOperationsProvider>(context, listen: false).isLoading =
+          false;
     }
   }
 
@@ -67,7 +73,7 @@ class PickServices {
     if (pickedFile == null) return;
 
     /// file might be picked
-    List<ClienteLoad> clients = [];
+    List<Cliente> clients = [];
     var bytes = pickedFile.files.single.bytes;
     var excel = Excel.decodeBytes(bytes!);
     var table = excel.tables.keys.first;
@@ -77,42 +83,35 @@ class PickServices {
       if (row == null) {
         // print('empty');
       } else {
-        
-        final cliente = ClienteLoad(
+        final cliente = Cliente(
           businessName: row[0]?.value.toString() ?? 'N/A',
           firstName: row[1]?.value.toString() ?? 'N/A',
           lastName: row[2]?.value.toString() ?? 'N/A',
-          ibanWallet: [row[3]?.value?.toString() ?? '', row[4]?.value?.toString() ?? '', row[5]?.value?.toString() ?? ''],
+          ibanWallet: [
+            row[3]?.value?.toString() ?? '',
+          ],
           tier: row[6]?.value.toString().split("-")[0].trim() ?? 'N/A',
           tierStatus: row[6]?.value.toString().split("-")[1].trim() ?? 'N/A',
-          clientType: row[7]?.value.toString() ?? 'N/A',
+          clientType: row[7]?.value.toString() ?? 'Individual',
           registryDate: row[8]?.value.toString() ?? 'N/A',
+          operations: [],
           countryResidency: row[9]?.value.toString() ?? 'N/A',
           nationality: row[10]?.value.toString() ?? 'N/A',
           birth: row[11]?.value.toString() ?? 'N/A',
           documentNumber: row[12]?.value.toString() ?? 'N/A',
           expirationDate: row[13]?.value.toString() ?? 'N/A',
-          clientId: row[14]?.value.toString() ?? 'N/A',
-          tierRisk: row[15]?.value.toString() ?? 'N/A',
           residenceLand: row[16]?.value.toString() ?? 'N/A',
           nationalityLand: row[17]?.value.toString() ?? 'N/A',
-          ibanLand: row[18]?.value.toString() ?? 'N/A',
-          residenceRisk: (row[19]!.value.toString().isEmpty) ? '5' : row[19]!.value.toString(),
-          nationalityRisk: (row[20]!.value.toString().isEmpty) ? '5' : row[20]!.value.toString(),
-          ibanGeoRisk: (row[21]!.value.toString().isEmpty) ? '5' : row[21]!.value.toString(),
           userAge: row[22]?.value.toString() ?? 'N/A',
-          userAgeRisk: (row[20]!.value.toString().isEmpty) ? '5' : row[23]!.value.toString(),
-          userTypeRisk: (row[24]!.value.toString().isEmpty) ? '5' : row[24]!.value.toString(),
-          concatenacionIban: [row[25]?.value?.toString() ?? '', row[26]?.value?.toString() ?? '', row[27]?.value?.toString() ?? ''],
-          concatenacionBusinessNameIban: [row[28]?.value?.toString() ?? '', row[29]?.value?.toString() ?? '', row[30]?.value?.toString() ?? ''],
-          auxRiesgo: row[31]?.value.toString() ?? 'N/A',
+          auxRiesgo: row[23]?.value.toString() ?? 'N/A',
         );
 
         clients.add(cliente);
       }
     }
     if (context.mounted) {
-      Provider.of<ListClientsProvider>(context, listen: false).clientsLoad = clients;
+      Provider.of<ListClientsProvider>(context, listen: false).clientsLoad =
+          clients;
     }
   }
 }
