@@ -4,7 +4,7 @@ import 'package:moonable/settings/constants.dart';
 import 'package:moonable/ui/widgets/botones/floating_button_csv_clients.dart';
 import 'package:provider/provider.dart';
 
-import '../../../providers/list_clients_provider.dart';
+import '../../../providers/clients_provider.dart';
 
 /// Flutter code sample for [DataTable].
 
@@ -18,7 +18,7 @@ class LoadClientsView extends StatefulWidget {
 class _LoadClientsViewState extends State<LoadClientsView> {
   @override
   Widget build(BuildContext context) {
-    final clients = Provider.of<ListClientsProvider>(context).clientsLoad;
+    final clients = Provider.of<ClientsProvider>(context).clientsLoad;
     return Scaffold(
       floatingActionButton: const FloatingButtonCsvClients(),
       body: (clients.isEmpty)
@@ -34,7 +34,8 @@ class _LoadClientsViewState extends State<LoadClientsView> {
                       width: 25,
                       height: 25,
                       child: CircularProgressIndicator()),
-                  Text('Esperando Archivo'),
+                  SizedBox(height: 10),
+                  Text('Importe un archivo Excel de sus clientes'),
                 ],
               )))
           : const Padding(
@@ -53,14 +54,14 @@ class DataTableExample extends StatefulWidget {
 }
 
 class _DataTableExampleState extends State<DataTableExample> {
-  static List<Cliente> clients = [];
+  static List<Client> clients = [];
   List<bool> selected = [];
-  static List<Cliente> selectedClients = [];
+  static List<Client> selectedClients = [];
 
   @override
   void initState() {
     final clientsProvider =
-        Provider.of<ListClientsProvider>(context, listen: false);
+        Provider.of<ClientsProvider>(context, listen: false);
     clients = clientsProvider.clientsLoad
         .where((element) =>
             element.firstName != "N/A" && !element.ibanWallet.contains(""))
@@ -71,11 +72,11 @@ class _DataTableExampleState extends State<DataTableExample> {
 
   @override
   Widget build(BuildContext context) {
-    final listClientsProvider = Provider.of<ListClientsProvider>(context);
+    final listClientsProvider = Provider.of<ClientsProvider>(context);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Container(
           width: wSize(context),
@@ -137,19 +138,19 @@ class _DataTableExampleState extends State<DataTableExample> {
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 100,
-                          child: Text(clients[index].businessName ?? 'N/A',
+                          child: Text(clients[index].businessName,
                               style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 80,
-                          child: Text(clients[index].firstName ?? 'N/A',
+                          child: Text(clients[index].firstName,
                               style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 80,
-                          child: Text(clients[index].lastName ?? 'N/A',
+                          child: Text(clients[index].lastName,
                               style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
@@ -173,79 +174,79 @@ class _DataTableExampleState extends State<DataTableExample> {
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 50,
-                          child: Text(clients[index].tier ?? 'N/A',
+                          child: Text(clients[index].tier,
                               style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 80,
-                          child: Text(clients[index].tierStatus ?? 'N/A',
+                          child: Text(clients[index].tierStatus,
                               style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 80,
-                          child: Text(clients[index].clientType ?? 'N/A',
+                          child: Text(clients[index].clientType,
                               style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 80,
-                          child: Text(clients[index].registryDate ?? 'N/A',
+                          child: Text(clients[index].registryDate,
                               style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 100,
-                          child: Text(clients[index].countryResidency ?? 'N/A',
+                          child: Text(clients[index].countryResidency,
                               style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 100,
-                          child: Text(clients[index].nationality ?? 'N/A',
+                          child: Text(clients[index].nationality,
                               style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 80,
-                          child: Text(clients[index].birth ?? 'N/A',
+                          child: Text(clients[index].birth,
                               style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 100,
-                          child: Text(clients[index].documentNumber ?? 'N/A',
+                          child: Text(clients[index].documentNumber,
                               style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 80,
-                          child: Text(clients[index].expirationDate ?? 'N/A',
+                          child: Text(clients[index].expirationDate,
                               style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 100,
-                          child: Text(clients[index].residenceLand ?? 'N/A',
+                          child: Text(clients[index].residenceLand,
                               style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 50,
-                          child: Text(clients[index].nationalityLand ?? 'N/A',
+                          child: Text(clients[index].nationalityLand,
                               style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 50,
-                          child: Text(clients[index].userAge ?? 'N/A',
+                          child: Text(clients[index].userAge,
                               style: Theme.of(context).textTheme.bodySmall),
                         )),
                         DataCell(Container(
                           alignment: Alignment.centerLeft,
                           width: 80,
-                          child: Text(clients[index].auxRiesgo ?? 'N/A',
+                          child: Text(clients[index].auxRiesgo,
                               style: Theme.of(context).textTheme.bodySmall),
                         )),
                       ],
@@ -267,10 +268,12 @@ class _DataTableExampleState extends State<DataTableExample> {
             ],
           ),
         ),
-        SizedBox(
+        Container(
+          alignment: Alignment.centerRight,
           // padding: const EdgeInsets.only(bottom: 10),
-          width: double.infinity,
+          width: 400,
           height: 50,
+          
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -294,16 +297,17 @@ class _DataTableExampleState extends State<DataTableExample> {
                   onPressed: () async {
                     await listClientsProvider.guardarMultiplesClientes(
                         clients: selectedClients);
-
-                    for (var order in selectedClients) {
+                    setState(() {
+                      for (var client in selectedClients) {
                       listClientsProvider.clientsLoad
-                          .removeWhere((orderDB) => orderDB == order);
+                          .removeWhere((clientDB) => clientDB == client);
+                      clients
+                          .removeWhere((clientDB) => clientDB == client);
                     }
                     selectedClients = [];
                     selected = List<bool>.generate(
                         clients.length, (int index) => false);
-
-                    setState(() {});
+                    });
                   },
                   icon: const Icon(Icons.save, color: Colors.green),
                 ),

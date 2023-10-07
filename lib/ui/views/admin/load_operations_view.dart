@@ -1,10 +1,13 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:moonable/models/operation_model.dart';
+import 'package:moonable/router/router.dart';
+import 'package:moonable/services/navigator_service.dart';
 import 'package:moonable/settings/constants.dart';
 import 'package:provider/provider.dart';
 
-import '../../../providers/list_clients_provider.dart';
-import '../../../providers/list_operations_provider.dart';
+import '../../../providers/clients_provider.dart';
+import '../../../providers/operations_provider.dart';
 import '../../widgets/botones/floating_button_csv_operations.dart';
 import '../../widgets/flag_country_widget.dart';
 
@@ -21,35 +24,78 @@ class _LoadOperationsViewState extends State<LoadOperationsView> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ListClientsProvider>(context, listen: false).getAllClientsDB();
+    Provider.of<ClientsProvider>(context, listen: false).getAllClientsDB();
   }
+
+  // recognizer: new TapGestureRecognizer()
+  //                   ..onTap = () { launch('https://docs.flutter.io/flutter/services/UrlLauncher-class.html');
 
   @override
   Widget build(BuildContext context) {
     final operationsLoad =
-        Provider.of<ListOperationsProvider>(context).operationsLoad;
+        Provider.of<OperationsProvider>(context).operationsLoad;
+    final clients = Provider.of<ClientsProvider>(context).allClientsDB;
     return Scaffold(
       floatingActionButton: const FloatingButtonCsvOp(),
-      body: (operationsLoad.isEmpty)
-          ? SizedBox(
-              width: wSize(context),
-              height: hSize(context),
-              child: const Center(
-                  child: Column(
+      body: (clients.isEmpty)
+          ? Center(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(
-                      width: 25,
-                      height: 25,
-                      child: CircularProgressIndicator()),
-                  Text('Esperando Archivo'),
+                  Text(
+                    'Es requerido tener almenos un cliente creado en la base de datos\n',
+                    style: text14BodyM(context),
+                  ),
+                  RichText(
+                      text: TextSpan(children: [
+                    TextSpan(text: 'Puedes ir a ', style: text14BodyM(context)),
+                    TextSpan(
+                        text: 'Agregar Cliente',
+                        style: text14BodyM(context)
+                            .copyWith(color: primary(context)),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            NavigatorService.navigateTo(
+                                Flurorouter.adminClients);
+                
+                          }),
+                    TextSpan(text: ' ó ', style: text14BodyM(context)),
+                    TextSpan(
+                        text: 'Agregar Clientes en lote',
+                        style: text14BodyM(context)
+                            .copyWith(color: primary(context)),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            NavigatorService.navigateTo(
+                                Flurorouter.uploadClients);
+                           
+                          }),
+                  ]))
                 ],
-              )))
-          : const Padding(
-              padding: EdgeInsets.only(bottom: 0, left: 10, right: 10, top: 10),
-              child: DataTableExample(),
-            ),
+              ),
+            )
+          : (operationsLoad.isEmpty)
+              ? SizedBox(
+                  width: wSize(context),
+                  height: hSize(context),
+                  child: const Center(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                          width: 25,
+                          height: 25,
+                          child: CircularProgressIndicator()),
+                      SizedBox(height: 10),
+                      Text('Importe un archivo Excel de sus operaciones'),
+                    ],
+                  )))
+              : const Padding(
+                  padding:
+                      EdgeInsets.only(bottom: 0, left: 10, right: 10, top: 10),
+                  child: DataTableExample(),
+                ),
     );
   }
 }
@@ -69,9 +115,9 @@ class _DataTableExampleState extends State<DataTableExample> {
   @override
   void initState() {
     final operationsProvider =
-        Provider.of<ListOperationsProvider>(context, listen: false);
+        Provider.of<OperationsProvider>(context, listen: false);
     operations = operationsProvider.operationsLoad.where((element) {
-      final cli = Provider.of<ListClientsProvider>(context, listen: false)
+      final cli = Provider.of<ClientsProvider>(context, listen: false)
           .getClientByIban(iban: element.ibanWallet);
 
       return element.ibanWallet != "000000" && cli != null;
@@ -82,8 +128,8 @@ class _DataTableExampleState extends State<DataTableExample> {
 
   @override
   Widget build(BuildContext context) {
-    final listOperationsProvider = Provider.of<ListOperationsProvider>(context);
-    final listClientsProvider = Provider.of<ListClientsProvider>(context);
+    final listOperationsProvider = Provider.of<OperationsProvider>(context);
+    final listClientsProvider = Provider.of<ClientsProvider>(context);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -148,7 +194,7 @@ class _DataTableExampleState extends State<DataTableExample> {
                                   Column(
                                     children: [
                                       Text(
-                                        operations[index].platform ?? 'N/A',
+                                        operations[index].platform,
                                         style: text10mini(context),
                                       ),
                                       FlagWCountryWidget(
@@ -174,11 +220,11 @@ class _DataTableExampleState extends State<DataTableExample> {
                                           ),
                                         if (client != null) ...[
                                           Text(
-                                            client.firstName ?? 'N/A',
+                                            client.firstName,
                                             style: text10mini(context),
                                           ),
                                           Text(
-                                            client.lastName ?? 'N/A',
+                                            client.lastName,
                                             style: text10mini(context),
                                           ),
                                         ],
@@ -269,6 +315,8 @@ class _DataTableExampleState extends State<DataTableExample> {
 
                     for (var op in selectedOp) {
                       listOperationsProvider.allOperationsDB.removeWhere(
+                          (opDB) => opDB.ibanWallet == op.ibanWallet);
+                      operations.removeWhere(
                           (opDB) => opDB.ibanWallet == op.ibanWallet);
                     }
                     selectedOp = [];

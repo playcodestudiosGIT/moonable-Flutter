@@ -4,7 +4,7 @@ import '../../models/cliente_model.dart';
 
 class AllClientsResponse {
     final int total;
-    final List<Cliente> clients;
+    final List<Client> clients;
 
     AllClientsResponse({
         required this.total,
@@ -17,7 +17,7 @@ class AllClientsResponse {
 
     factory AllClientsResponse.fromJson(Map<String, dynamic> json) => AllClientsResponse(
         total: json["total"],
-        clients: List<Cliente>.from(json["clients"].map((x) => Cliente.fromJson(x))),
+        clients: List<Client>.from(json["clients"].map((x) => Client.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {

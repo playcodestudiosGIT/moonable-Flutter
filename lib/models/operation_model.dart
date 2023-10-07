@@ -1,35 +1,35 @@
 import 'dart:convert';
 
 class Operation {
-    final String? client;
-    final String? platform;
-    final String ibanWallet;
-    final double fiatAmount;
-    final String fiatType;
-    final double? exchangeRate;
-    final String? assetType;
-    final double? percent;
-    final DateTime dueDate;
-    final dynamic estado;
-    final String? id;
-    final DateTime? createdAt;
-    final DateTime? updatedAt;
+    String client;
+    String platform;
+    String ibanWallet;
+    double fiatAmount;
+    String fiatType;
+    double exchangeRate;
+    String assetType;
+    double percent;
+    DateTime dueDate;
+    dynamic estado;
+    String? uid;
+    DateTime createdAt;
+    DateTime updatedAt;
 
 
     Operation({
-        this.client,
-        this.platform,
+        required this.client,
+        required this.platform,
         required this.ibanWallet,
         required this.fiatAmount,
         required this.fiatType,
-        this.exchangeRate,
-        this.assetType,
-        this.percent,
+        required this.exchangeRate,
+        required this.assetType,
+        required this.percent,
         required this.dueDate,
-        this.estado,
-        this.id,
-        this.createdAt,
-        this.updatedAt,
+        required this.estado,
+        this.uid,
+        required this.createdAt,
+        required this.updatedAt,
  
     });
 
@@ -48,7 +48,7 @@ class Operation {
         percent: json["percent"]?.toDouble(),
         dueDate: DateTime.parse(json["dueDate"]),
         estado: json["estado"],
-        id: json["_id"],
+        uid: json["uid"],
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
 
@@ -65,9 +65,9 @@ class Operation {
         "percent": percent,
         "dueDate": dueDate.toIso8601String(),
         "estado": estado,
-        "_id": id,
-        "createdAt": createdAt?.toIso8601String(),
-        "updatedAt": updatedAt?.toIso8601String(),
+        "uid": uid,
+        "createdAt": createdAt.toIso8601String(),
+        "updatedAt": updatedAt.toIso8601String(),
 
     };
 }

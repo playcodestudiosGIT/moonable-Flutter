@@ -4,6 +4,8 @@ import 'package:moonable/settings/constants.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
+import '../../providers/conf/settings_provider.dart';
+import '../widgets/botones/boton_icon_redondo.dart';
 import '../widgets/drawers/custom_drawer.dart';
 
 class UsersLayout extends StatelessWidget {
@@ -12,8 +14,10 @@ class UsersLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userScaffoldkey = Provider.of<GlobalKeysProvider>(context).userScaffoldkey;
+    final userScaffoldkey =
+        Provider.of<GlobalKeysProvider>(context).userScaffoldkey;
     final authProvider = Provider.of<AuthProvider>(context);
+    final settingsProvider = Provider.of<SettingsProvider>(context);
     return Scaffold(
         key: userScaffoldkey,
         drawer: const CustomDrawer(),
@@ -27,6 +31,18 @@ class UsersLayout extends StatelessWidget {
           ),
           title: const Text('Moonable'),
           actions: [
+            BotonRedondoIcono(
+                icon: (settingsProvider.themeMode == Thememode.ligth)
+                    ? Icons.dark_mode
+                    : Icons.light_mode,
+                onTap: () {
+                  if (settingsProvider.themeMode == Thememode.ligth) {
+                    settingsProvider.themeMode = Thememode.dark;
+                  } else {
+                    settingsProvider.themeMode = Thememode.ligth;
+                  }
+                }),
+            const SizedBox(width: 10),
             TextButton.icon(
                 label: Text(
                   'Salir',

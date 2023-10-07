@@ -1,61 +1,61 @@
 import 'dart:convert';
 
-import 'package:moonable/models/operation_model.dart';
+import 'operation_model.dart';
 
-class Cliente {
-  final String? businessName;
-  final String? firstName;
-  final String? lastName;
-  final List<String> ibanWallet;
-  final List<Operation>? operations;
-  final String? tier;
-  final String? tierStatus;
-  final String? clientType;
-  final String? registryDate;
-  final String? countryResidency;
-  final String? nationality;
-  final String? birth;
-  final String? documentNumber;
-  final String? expirationDate;
-  final String? residenceLand;
-  final String? nationalityLand;
-  final String? userAge;
-  final String? auxRiesgo;
-  final bool? estado;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
-  final String? uid;
+class Client {
+    String businessName;
+    String firstName;
+    String lastName;
+    List<String> ibanWallet;
+    List<Operation> operations;
+    String tier;
+    String tierStatus;
+    String clientType;
+    String registryDate;
+    String countryResidency;
+    String nationality;
+    String birth;
+    String documentNumber;
+    String expirationDate;
+    String residenceLand;
+    String nationalityLand;
+    String userAge;
+    String auxRiesgo;
+    bool estado;
+    DateTime createdAt;
+    DateTime updatedAt;
+    String uid;
 
-  Cliente({
-    this.businessName,
-    this.firstName,
-    this.lastName,
-    required this.ibanWallet,
-    this.operations,
-    this.tier,
-    this.tierStatus,
-    this.clientType,
-    this.registryDate,
-    this.countryResidency,
-    this.nationality,
-    this.birth,
-    this.documentNumber,
-    this.expirationDate,
-    this.residenceLand,
-    this.nationalityLand,
-    this.userAge,
-    this.auxRiesgo,
-    this.estado,
-    this.createdAt,
-    this.updatedAt,
-    this.uid,
-  });
+    Client({
+        required this.businessName,
+        required this.firstName,
+        required this.lastName,
+        required this.ibanWallet,
+        required this.operations,
+        required this.tier,
+        required this.tierStatus,
+        required this.clientType,
+        required this.registryDate,
+        required this.countryResidency,
+        required this.nationality,
+        required this.birth,
+        required this.documentNumber,
+        required this.expirationDate,
+        required this.residenceLand,
+        required this.nationalityLand,
+        required this.userAge,
+        required this.auxRiesgo,
+        required this.estado,
+        required this.createdAt,
+        required this.updatedAt,
+        required this.uid,
+    });
 
-  factory Cliente.fromRawJson(String str) => Cliente.fromJson(json.decode(str));
+    factory Client.fromRawJson(String str) => Client.fromJson(json.decode(str));
 
-  String toRawJson() => json.encode(toJson());
+    String toRawJson() => json.encode(toJson());
 
-  factory Cliente.fromJson(Map<String, dynamic> json) => Cliente(
+    factory Client.fromJson(Map<String, dynamic> json) => Client(
         businessName: json["businessName"],
         firstName: json["firstName"],
         lastName: json["lastName"],
@@ -74,18 +74,18 @@ class Cliente {
         nationalityLand: json["nationalityLand"],
         userAge: json["userAge"],
         auxRiesgo: json["auxRiesgo"],
-        estado: json["estado"] ?? true,
+        estado: json["estado"],
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
         uid: json["uid"],
-      );
+    );
 
-  Map<String, dynamic> toJson() => {
+    Map<String, dynamic> toJson() => {
         "businessName": businessName,
         "firstName": firstName,
         "lastName": lastName,
         "ibanWallet": List<dynamic>.from(ibanWallet.map((x) => x)),
-        "operations": List<dynamic>.from(operations!.map((x) => x.toJson())),
+        "operations": List<dynamic>.from(operations.map((x) => x.toJson())),
         "tier": tier,
         "tierStatus": tierStatus,
         "clientType": clientType,
@@ -99,9 +99,9 @@ class Cliente {
         "nationalityLand": nationalityLand,
         "userAge": userAge,
         "auxRiesgo": auxRiesgo,
-        "estado": estado ?? true,
-        "createdAt": createdAt?.toIso8601String(),
-        "updatedAt": updatedAt?.toIso8601String(),
+        "estado": estado,
+        "createdAt": createdAt.toIso8601String(),
+        "updatedAt": updatedAt.toIso8601String(),
         "uid": uid,
-      };
+    };
 }

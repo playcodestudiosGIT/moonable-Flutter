@@ -29,7 +29,8 @@ class CustomDrawer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
                 child: Text('Moonable', style: text32Headline(context)),
               ),
               const Spacer(),
@@ -37,7 +38,8 @@ class CustomDrawer extends StatelessWidget {
                   margin: const EdgeInsets.all(4),
                   child: IconButton(
                     icon: const Icon(Icons.clear),
-                    onPressed: () => {userScaffoldkey.currentState!.closeDrawer()},
+                    onPressed: () =>
+                        {userScaffoldkey.currentState!.closeDrawer()},
                   )),
             ],
           ),
@@ -46,14 +48,15 @@ class CustomDrawer extends StatelessWidget {
             children: [
               const CircleAvatar(radius: 30),
               const SizedBox(height: 10),
-              Text('${authProvider.user!.nombre} ${authProvider.user!.apellido}'),
-              const SizedBox(height: 30),
+              Text(
+                  '${authProvider.user!.nombre} ${authProvider.user!.apellido}'),
+              const SizedBox(height: 10),
               TextButton.icon(
                   onPressed: () {
                     NavigatorService.navigateTo(Flurorouter.auditorPerfil);
                     closeDrawer();
                   },
-                  icon: const Icon(Icons.edit),
+                  icon: const Icon(Icons.manage_accounts_rounded),
                   label: const Text('Editar'))
             ],
           ),
@@ -67,7 +70,7 @@ class CustomDrawer extends StatelessWidget {
             },
             width: 100,
             padding: 10,
-            icon: Icons.monitor_heart,
+            icon: Icons.ssid_chart_sharp,
           ),
           const SizedBox(height: 48),
           if (authProvider.user!.rol == 'ADMIN_ROLE') ...[
@@ -90,7 +93,7 @@ class CustomDrawer extends StatelessWidget {
               },
               width: 100,
               padding: 10,
-              icon: Icons.money_outlined,
+              icon: Icons.show_chart,
             ),
             const SeparadorMenuTexto(text: 'CARGAR DATA'),
             CustomMenuItem(
@@ -120,10 +123,7 @@ class CustomDrawer extends StatelessWidget {
               child: TextButton.icon(
                 onPressed: () => authProvider.logOut(context),
                 icon: const Icon(Icons.logout),
-                label: Text(
-                  'Salir',
-                  style: text10mini(context),
-                ),
+                label: const Text('Salir'),
               ),
             ),
             const SizedBox(

@@ -14,8 +14,8 @@ import 'providers/conf/global_keys_provider.dart';
 import 'providers/conf/settings_provider.dart';
 import 'providers/forms/login_form_provider.dart';
 import 'providers/forms/register_form_provider.dart';
-import 'providers/list_clients_provider.dart';
-import 'providers/list_operations_provider.dart';
+import 'providers/clients_provider.dart';
+import 'providers/operations_provider.dart';
 import 'services/local_storage.dart';
 
 void main() async {
@@ -36,8 +36,8 @@ class AppState extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
         ChangeNotifierProvider(create: (_) => LoginFormProvider()),
         ChangeNotifierProvider(create: (_) => RegisterFormProvider()),
-        ChangeNotifierProvider(create: (_) => ListOperationsProvider()),
-        ChangeNotifierProvider(create: (_) => ListClientsProvider()),
+        ChangeNotifierProvider(create: (_) => OperationsProvider()),
+        ChangeNotifierProvider(create: (_) => ClientsProvider()),
         ChangeNotifierProvider(lazy: false, create: (_) => AuthProvider()),
       ],
       child: const MyApp(),
@@ -89,6 +89,6 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
   Set<PointerDeviceKind> get dragDevices => {
         PointerDeviceKind.touch,
         PointerDeviceKind.mouse,
-        // etc.
+    
       };
 }
