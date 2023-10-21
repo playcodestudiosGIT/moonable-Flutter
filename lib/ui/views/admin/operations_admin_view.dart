@@ -15,21 +15,22 @@ class OperationsAdminView extends StatefulWidget {
 }
 
 class _OperationsAdminViewState extends State<OperationsAdminView> {
+  int limite = 10;
+  int desde = 0;
   late List<OperationItem> operationsDB;
   @override
   void initState() {
     Provider.of<OperationsProvider>(context, listen: false)
-        .getAllOperationsDB();
+        .paginatedOperationsDB(desde: desde, limite: limite);
     Provider.of<ClientsProvider>(context, listen: false).getAllClientsDB();
-    
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final operationsProvider =
-        Provider.of<OperationsProvider>(context);
-    operationsDB = operationsProvider.allOperationsDB
+    final operationsProvider = Provider.of<OperationsProvider>(context);
+    operationsDB = operationsProvider.paginatedOp
         .map(
           (e) => OperationItem(operation: e),
         )
@@ -47,7 +48,8 @@ class _OperationsAdminViewState extends State<OperationsAdminView> {
                   onPressed: () async {
                     final ok = await showDialog(
                         context: context,
-                        builder: (context) => CreateEditOperationDialog(operation: null));
+                        builder: (context) =>
+                            CreateEditOperationDialog(operation: null));
                     if (ok) {
                       setState(() {});
                     }
@@ -58,7 +60,21 @@ class _OperationsAdminViewState extends State<OperationsAdminView> {
           ),
           const SizedBox(height: 30),
           Column(
-            children: [if (operationsDB.isNotEmpty) ...operationsDB.reversed],
+            children: [if (operationsDB.isNotEmpty) ...operationsDB,
+            const SizedBox(height: 20),
+            if (operationsDB.isNotEmpty)
+            IconButton(
+                onPressed: () {
+                
+                  limite = limite + 5;
+                  Provider.of<OperationsProvider>(context, listen: false).getAllOperationsDB(desde: desde, limite: limite);
+                },
+                icon: Icon(
+                  Icons.add_circle_outline_outlined,
+                  size: 30,
+                  color: primary(context).withOpacity(0.3),
+                )),
+            ],
           ),
           const SizedBox(height: 100)
         ],

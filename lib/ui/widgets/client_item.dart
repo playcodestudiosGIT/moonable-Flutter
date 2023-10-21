@@ -41,7 +41,7 @@ class _ClientItemState extends State<ClientItem> {
         constraints: const BoxConstraints(maxWidth: 500, minWidth: 300),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         margin: const EdgeInsets.all(5),
-        width: 500,
+        width: 350,
         height: 72,
         decoration: BoxDecoration(
             color: (isDarkMode)
@@ -77,23 +77,24 @@ class _ClientItemState extends State<ClientItem> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(width: 10),
-                  if (widget.client.tierStatus == "Approved")
-                    Text('Approved',
-                        style: text10mini(context).copyWith(
-                            color: Colors.greenAccent,
-                            fontWeight: FontWeight.bold)),
-                  if (widget.client.tierStatus == "Pending")
-                    Text('Pending',
-                        style: text10mini(context).copyWith(
-                            color: Colors.orangeAccent,
-                            fontWeight: FontWeight.bold)),
-                  if (widget.client.tierStatus == "")
-                    Text('Pending',
-                        style: text10mini(context).copyWith(
-                            color: Colors.orangeAccent,
-                            fontWeight: FontWeight.bold)),
                   Row(
                     children: [
+                      if (widget.client.tierStatus == "Approved")
+                        Text('Approved',
+                            style: text10mini(context).copyWith(
+                                color: Colors.greenAccent,
+                                fontWeight: FontWeight.bold)),
+                      if (widget.client.tierStatus == "Pending")
+                        Text('Pending',
+                            style: text10mini(context).copyWith(
+                                color: Colors.orangeAccent,
+                                fontWeight: FontWeight.bold)),
+                      if (widget.client.tierStatus == "")
+                        Text('Pending',
+                            style: text10mini(context).copyWith(
+                                color: Colors.orangeAccent,
+                                fontWeight: FontWeight.bold)),
+                      const SizedBox(width: 10),
                       Text(
                         widget.client.clientType,
                         style: text10miniOp(context),
@@ -132,54 +133,78 @@ class _ClientItemState extends State<ClientItem> {
               ),
             ),
             const SizedBox(width: 10),
-            Center(
-                child: SingleChildScrollView(
-              reverse: true,
-              child: Column(
-                children: [
-                  ...widget.client.operations.map((e) => SizedBox(
-                      width: 130,
-                      // color: Colors.greenAccent.withOpacity(0.1),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.arrow_drop_up,
-                            size: 15,
-                            color: Colors.green,
-                          ),
-                          const Spacer(),
-                          Text(e.fiatType),
-                          const SizedBox(width: 10),
-                          Text(e.fiatAmount.toString()),
-                        ],
-                      ))),
-                  Container(
-                    width: 130,
-                    height: 0.5,
-                    color: Colors.greenAccent,
-                  ),
-                  Builder(builder: (context) {
-                    return SizedBox(
-                        width: 130,
-                        child: Container(
-                          color: Colors.greenAccent.withOpacity(0.1),
-                          child: Row(
-                            children: [
-                              Text(
-                                'TOTAL:',
-                                style: text10miniOp(context),
-                              ),
-                              const Spacer(),
-                              const Text(' EUR'),
-                              const SizedBox(width: 10),
-                              Text(total.toString()),
-                            ],
-                          ),
-                        ));
-                  })
-                ],
-              ),
-            )),
+            // if (wSize(context) > 430)
+            //   Center(
+            //       child: Builder(builder: (context) {
+            //         List<Operation> opUSD = [];
+            //         List<Operation> opEUR = [];
+            //         opUSD = widget.client.operations
+            //             .where((element) => element.fiatType == 'USDT')
+            //             .toList();
+            //         opEUR = widget.client.operations
+            //             .where((element) => element.fiatType == 'EUR')
+            //             .toList();
+            //         double totalEUR = 0;
+            //         double totalUSDT = 0;
+                    
+            //         for (var op in opUSD) {
+            //           totalUSDT = totalUSDT + op.fiatAmount;
+            //         }
+            //         for (var op in opEUR) {
+            //           totalEUR = totalEUR + op.fiatAmount;
+            //         }
+            //         double total = totalEUR+totalUSDT;
+            //         return Column(
+            //           children: [
+            //             SizedBox(
+            //                 width: 100,
+            //                 // color: Colors.greenAccent.withOpacity(0.1),
+            //                 child: Row(
+            //                   children: [
+            //                     Text('€'),
+            //                     const SizedBox(width: 5),
+            //                     Text(totalEUR.toString()),
+            //                   ],
+            //                 )),
+            //             SizedBox(
+            //                 width: 100,
+            //                 // color: Colors.greenAccent.withOpacity(0.1),
+            //                 child: Row(
+            //                   children: [
+            //                     Text('\$'),
+
+            //                     const SizedBox(width: 5),
+            //                     Text(totalUSDT.toString()),
+            //                   ],
+            //                 )),
+                     
+            //             Container(
+            //               width: 100,
+            //               height: 0.5,
+            //               color: Colors.greenAccent,
+            //             ),
+            //             SizedBox(
+            //                   width: 100,
+            //                   child: Container(
+            //                     color: Colors.greenAccent.withOpacity(0.1),
+            //                     child: Row(
+            //                       children: [
+            //                         // Text(
+            //                         //   'TOTAL:',
+            //                         //   style: text10miniOp(context),
+            //                         // ),
+            //                         // const Spacer(),
+            //                         const Text('\$'),
+            //                         const SizedBox(width: 5),
+            //                         Text(total.toString()),
+            //                       ],
+            //                     ),
+            //                   ))
+              
+            //             // })
+            //           ],
+            //         );
+            //       })),
             const Spacer(),
             IconButton(
                 onPressed: () async {

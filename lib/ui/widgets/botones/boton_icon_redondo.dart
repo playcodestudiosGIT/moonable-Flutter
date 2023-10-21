@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moonable/settings/constants.dart';
 
 class BotonRedondoIcono extends StatelessWidget {
   final Color? fillColor;
@@ -16,6 +17,12 @@ class BotonRedondoIcono extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    late bool isDarkMode;
+    if (Theme.of(context).brightness == Brightness.dark) {
+      isDarkMode = true;
+    } else {
+      isDarkMode = false;
+    }
     return GestureDetector(
       onTap: () => onTap(),
       child: MouseRegion(
@@ -30,7 +37,7 @@ class BotonRedondoIcono extends StatelessWidget {
           child: Center(
               child: Icon(
             icon,
-            color: iconColor,
+            color: (isDarkMode) ?iconColor: primary(context),
           )),
         ),
       ),

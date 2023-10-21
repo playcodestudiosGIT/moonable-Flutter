@@ -73,6 +73,12 @@ class _OperationItemState extends State<OperationItem> {
       isDarkMode = false;
     }
 
+    String fiat = '\$';
+
+    if (widget.operation.assetType == 'EUR') {
+      fiat = '€';
+    }
+
     return Container(
         constraints: const BoxConstraints(maxWidth: 500, minWidth: 300),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -92,7 +98,7 @@ class _OperationItemState extends State<OperationItem> {
                 country: widget.operation.ibanWallet.substring(0, 2)),
             const SizedBox(width: 15),
             SizedBox(
-              width: 160,
+              width: 140,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,24 +137,29 @@ class _OperationItemState extends State<OperationItem> {
               ),
             ),
             const SizedBox(width: 10),
+            if(wSize(context) > 376)
             SizedBox(
-              width: 160,
+              width: (wSize(context) > 465) ? 160 : 65,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      Text(
-                        'Amount: ',
-                        style: text10miniOp(context),
-                      ),
-                      Text(
-                        ' ${widget.operation.fiatAmount} ${widget.operation.fiatType}',
-                        style: text14BodyM(context),
+                      if (wSize(context) > 465)
+                        Text(
+                          'Amount: ',
+                          style: text10miniOp(context),
+                        ),
+                      FittedBox(
+                        child: Text(
+                          ' ${widget.operation.fiatAmount} $fiat',
+                          style: text14BodyM(context),
+                        ),
                       ),
                     ],
                   ),
+                  if (wSize(context) > 465)
                   Row(
                     children: [
                       Text(
@@ -161,7 +172,8 @@ class _OperationItemState extends State<OperationItem> {
                       ),
                     ],
                   ),
-                  Row(
+
+                  Wrap(
                     children: [
                       if (seconds.isNegative)
                         Text('OPEN      ',

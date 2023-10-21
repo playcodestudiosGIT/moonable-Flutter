@@ -8,6 +8,7 @@ import 'http/all_clients_response.dart';
 
 class ClientsProvider extends ChangeNotifier {
   List<Client> _allClientsDB = [];
+  List<Client> _paginatedClients = [];
   List<Client> _tmpClientsDB = [];
   int _totalAllClientsDB = 0;
   List<Client> _clientsLoad = [];
@@ -25,6 +26,12 @@ class ClientsProvider extends ChangeNotifier {
 
   set totalAllClientsDB(int value) {
     _totalAllClientsDB = value;
+    notifyListeners();
+  }
+
+  List<Client> get paginatedClients => _paginatedClients;
+  set paginatedClients(List<Client> value) {
+    _paginatedClients = value;
     notifyListeners();
   }
 
@@ -66,13 +73,26 @@ class ClientsProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> getAllClientsDB() async {
+  Future<void> getAllClientsDB({int desde = 0, int limite = 0}) async {
     try {
-      final resp = await MoonableApi.httpGet('/clientes');
+      final resp =
+          await MoonableApi.httpGet('/clientes?desde=$desde&limite=$limite');
       final allClientsResponse = AllClientsResponse.fromJson(resp);
 
       allClientsDB = allClientsResponse.clients;
       totalAllClientsDB = allClientsResponse.total;
+    } catch (e) {
+      // print(e);
+    }
+  }
+  Future<void> getPaginatedClientsDB({int desde = 0, int limite = 10}) async {
+    try {
+      final resp =
+          await MoonableApi.httpGet('/clientes?desde=$desde&limite=$limite');
+      final allClientsResponse = AllClientsResponse.fromJson(resp);
+
+      paginatedClients = allClientsResponse.clients;
+      // totalAllClientsDB = allClientsResponse.total;
     } catch (e) {
       // print(e);
     }

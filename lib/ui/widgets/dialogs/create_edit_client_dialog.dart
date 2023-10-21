@@ -59,8 +59,14 @@ class _CreateEditClientDialogState extends State<CreateEditClientDialog> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if(widget.client == null)
             Text(
               'Agregar cliente',
+              style: text22Title(context),
+            ),
+            if(widget.client != null)
+            Text(
+              'Editar cliente',
               style: text22Title(context),
             ),
             const SizedBox(height: 30),
@@ -187,7 +193,7 @@ class _CreateEditClientDialogState extends State<CreateEditClientDialog> {
                                         .map(
                                           (e) => Padding(
                                             padding:
-                                                const EdgeInsets.only(left: 40),
+                                                const EdgeInsets.only(left: 20),
                                             child: Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,

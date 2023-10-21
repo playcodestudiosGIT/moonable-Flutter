@@ -15,9 +15,11 @@ class ClientsAdminView extends StatefulWidget {
 }
 
 class _ClientsAdminViewState extends State<ClientsAdminView> {
+  int limite = 10;
+  int desde = 0;
   @override
   void initState() {
-    Provider.of<ClientsProvider>(context, listen: false).getAllClientsDB();
+    Provider.of<ClientsProvider>(context, listen: false).getPaginatedClientsDB(desde: desde, limite: limite);
 
     super.initState();
   }
@@ -49,11 +51,25 @@ class _ClientsAdminViewState extends State<ClientsAdminView> {
             ],
           ),
           const SizedBox(height: 15),
-          ...clientsProvider.allClientsDB
+          ...clientsProvider.paginatedClients
               .map(
                 (e) => ClientItem(client: e),
               )
-              .toList().reversed,
+              .toList(),
+              // .reversed,
+          const SizedBox(height: 20),
+          if (clientsProvider.paginatedClients.isNotEmpty)
+            IconButton(
+                onPressed: () {
+                
+                  limite = limite + 5;
+                  Provider.of<ClientsProvider>(context, listen: false).getPaginatedClientsDB(desde: desde, limite: limite);
+                },
+                icon: Icon(
+                  Icons.add_circle_outline_outlined,
+                  size: 30,
+                  color: primary(context).withOpacity(0.3),
+                )),
           const SizedBox(height: 100)
         ],
       ),

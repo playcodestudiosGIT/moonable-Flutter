@@ -6,6 +6,7 @@ import 'http/all_operations_response.dart';
 
 class OperationsProvider extends ChangeNotifier {
   List<Operation> _allOperationsDB = [];
+  List<Operation> _paginatedOp = [];
   int _totalAllOperationsDB = 0;
   List<Operation> _operationsLoad = [];
   List<Operation> selectedOperations = [];
@@ -22,6 +23,12 @@ class OperationsProvider extends ChangeNotifier {
 
   set allOperationsDB(List<Operation> value) {
     _allOperationsDB = value;
+    notifyListeners();
+  }
+
+  List<Operation> get paginatedOp => _paginatedOp;
+  set paginatedOp(List<Operation> value) {
+    _paginatedOp = value;
     notifyListeners();
   }
 
@@ -93,11 +100,23 @@ class OperationsProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> getAllOperationsDB() async {
+  Future<void> getAllOperationsDB({int desde = 0, int limite = 0}) async {
     try {
-      final resp = await MoonableApi.httpGet('/operaciones');
+      final resp =
+          await MoonableApi.httpGet('/operaciones?desde=$desde&limite=$limite');
       final operacionesResponse = AllOperationsResponse.fromJson(resp);
       allOperationsDB = operacionesResponse.operations;
+    } catch (e) {
+      // print(e);
+    }
+  }
+
+  Future<void> paginatedOperationsDB({int desde = 0, int limite = 0}) async {
+    try {
+      final resp =
+          await MoonableApi.httpGet('/operaciones?desde=$desde&limite=$limite');
+      final operacionesResponse = AllOperationsResponse.fromJson(resp);
+      paginatedOp = operacionesResponse.operations;
     } catch (e) {
       // print(e);
     }
@@ -116,4 +135,5 @@ class OperationsProvider extends ChangeNotifier {
       // print(e);
     }
   }
+
 }
